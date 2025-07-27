@@ -15,7 +15,8 @@ import {
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { ThemeToggle } from "@/components/layout/theme-toggle"
+import { useNavigate } from "react-router-dom"
+import logoImage from "@/assets/logo.png"
 
 const sidebarItems = [
   {
@@ -57,6 +58,16 @@ interface SidebarProps {
 export function Sidebar({ className }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    // Clear any stored auth tokens/data
+    localStorage.removeItem('auth-token')
+    localStorage.removeItem('user-data')
+    
+    // Navigate to login page
+    navigate('/login')
+  }
 
   const isActive = (path: string) => {
     if (path === "/admin") {
@@ -77,10 +88,12 @@ export function Sidebar({ className }: SidebarProps) {
       <div className="flex h-16 items-center justify-between px-4 border-b">
         {!collapsed && (
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-primary">
-              <Zap className="h-4 w-4 text-white" />
-            </div>
-            <span className="font-bold text-lg">DigitalFlow</span>
+            <img 
+              src={logoImage} 
+              alt="Elevate360 Digital" 
+              className="h-8 w-auto object-contain"
+            />
+            <span className="font-bold text-lg">Elevate360</span>
           </div>
         )}
         <Button
@@ -114,17 +127,15 @@ export function Sidebar({ className }: SidebarProps) {
 
       {/* Footer */}
       <div className="border-t p-4">
-        <div className="flex items-center justify-between">
-          {!collapsed && <ThemeToggle />}
-          <Button
-            variant="ghost"
-            size={collapsed ? "icon" : "sm"}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            <LogOut className="h-4 w-4" />
-            {!collapsed && <span className="ml-2">Logout</span>}
-          </Button>
-        </div>
+        <Button
+          variant="ghost"
+          size={collapsed ? "icon" : "sm"}
+          className="text-muted-foreground hover:text-foreground w-full justify-start"
+          onClick={handleLogout}
+        >
+          <LogOut className="h-4 w-4" />
+          {!collapsed && <span className="ml-2">Logout</span>}
+        </Button>
       </div>
     </div>
   )
